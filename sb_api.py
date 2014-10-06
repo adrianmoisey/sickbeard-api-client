@@ -40,15 +40,17 @@ class Sickbeard(object):
     hostname = "localhost"
     port = 8081
     api_key = ""
+    path = ""
 
-    def __init__(self, hostname, api_key, port=8081, protocol="http"):
+    def __init__(self, hostname, api_key, port=8081, protocol="http", path=""):
         self.hostname = hostname
         self.api_key = api_key
         self.port = port
         self.protocol = protocol
+	self.path = path
     
     def __str__(self):
-        return "%s://%s:%i/api/" % (self.protocol, self.hostname, int(self.port), self.api_key)
+        return "%s://%s:%i%s/api/%s" % (self.protocol, self.hostname, int(self.port), self.path, self.api_key)
 
 class SickbeardAPIException(Exception):
     "Error in API of Sickbeard"
@@ -188,7 +190,7 @@ class SickbeardAPI():
 
     def build_url(self, cmd, params={}):
         sb = self.sickbeard
-        return "%s://%s:%i/api/%s/?cmd=%s&%s" % (sb.protocol, sb.hostname, int(sb.port), sb.api_key, cmd, urllib.urlencode(params))
+        return "%s://%s:%i%s/api/%s/?cmd=%s&%s" % (sb.protocol, sb.hostname, int(sb.port), sb.path, sb.api_key, cmd, urllib.urlencode(params))
     
     def get(self, cmd, params={}):
         try:
